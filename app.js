@@ -1,6 +1,5 @@
 const base='https://storage.googleapis.com/gtv-videos-bucket/sample/';
 let movies = window.CINELANKA_MOVIES || [];
-try { const draft=JSON.parse(localStorage.getItem('cinelanka-catalog')); if(Array.isArray(draft)) movies=draft; } catch {}
 const esc=v=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const url=v=>{try {const u=new URL(v,base);return ['http:','https:'].includes(u.protocol)?u.href:''}catch{return ''}};
 
