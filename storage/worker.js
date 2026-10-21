@@ -14,7 +14,7 @@ if(path.startsWith('/media/')&&['GET','HEAD'].includes(request.method)){
  const key=path.slice(7);if(!/^videos\/[0-9a-f-]+\.(mp4|webm)$/.test(key))return reply({error:'Not found'},404);
  const obj=request.method==='HEAD'?await env.MOVIES.head(key):await env.MOVIES.get(key,{range:request.headers});if(!obj)return reply({error:'Not found'},404);
  const headers=new Headers({'Access-Control-Allow-Origin':ORIGIN,'Accept-Ranges':'bytes','Cache-Control':'public,max-age=86400','ETag':obj.httpEtag,'X-Content-Type-Options':'nosniff'});obj.writeHttpMetadata(headers);let status=200;
- if(obj.range&&'offset' in obj.range){const offset=obj.range.offset,length=obj.range.length;headers.set('Content-Range',`bytes ${offset}-${offset+length-1}/${obj.size}`);headers.set('Content-Length',String(length));status=206}else headers.set('Content-Length',String(obj.size));
+ if(request.headers.has('Range')&&obj.range&&'offset' in obj.range){const offset=obj.range.offset,length=obj.range.length;headers.set('Content-Range',`bytes ${offset}-${offset+length-1}/${obj.size}`);headers.set('Content-Length',String(length));status=206}else headers.set('Content-Length',String(obj.size));
  return new Response(request.method==='HEAD'?null:obj.body,{headers,status});
 }
 if(!path.startsWith('/uploads'))return reply({error:'Not found'},404);
